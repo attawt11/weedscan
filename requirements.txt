@@ -1,8 +1,9 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchvision
-ultralytics
+ultralytics-opencv-headless
 sahi
+opencv-python-headless
 streamlit
 pillow
 numpy
