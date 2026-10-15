@@ -25,7 +25,9 @@ html, body, [class*="css"], .stMarkdown, .stText, label, button, input, p, span,
 [data-testid="stHeader"] { background: transparent; }
 #MainMenu, footer, [data-testid="stDecoration"] { visibility: hidden; height: 0; }
 .block-container { max-width: 1320px; padding-top: 1.6rem; padding-bottom: 2rem; }
+/* กล่องที่มีกรอบ (st.container(border=True)) */
 [data-testid="stVerticalBlockBorderWrapper"] { background: #0e1512; border-color: #1f2d27 !important; border-radius: 16px !important; }
+/* ปุ่มหลัก */
 .stButton > button { width: 100%; height: 52px; border-radius: 12px; border: none;
   background: #b6f23a; color: #0a0f0d; font-weight: 700; font-size: 17px;
   box-shadow: 0 8px 30px -10px rgba(182,242,58,.6); transition: transform .15s ease, box-shadow .15s ease; }
@@ -40,6 +42,7 @@ html, body, [class*="css"], .stMarkdown, .stText, label, button, input, p, span,
 st.markdown(f'<style>{core.CSS}\n{ST_CSS}</style>', unsafe_allow_html=True)
 
 
+# ---------------- โมเดล (โหลดครั้งเดียว) ----------------
 @st.cache_resource(show_spinner='กำลังโหลดโมเดล…')
 def get_models():
     return core.load_models()
@@ -52,6 +55,7 @@ def load_image(src):
     return np.asarray(im)
 
 
+# ---------------- หัวเว็บ ----------------
 st.markdown(core.hero_html(), unsafe_allow_html=True)
 
 examples = sorted(glob.glob(os.path.join(core.EXAMPLE_DIR, '*.[jJpP][pPnN]*[gG]')))
@@ -64,6 +68,7 @@ except Exception:
 
 left, right = st.columns([4, 8], gap='medium')
 
+# ---------------- ฝั่งซ้าย: input ----------------
 with left:
     with st.container(border=True):
         st.markdown('<div class="section-label">01 · Input</div>', unsafe_allow_html=True)
@@ -79,12 +84,13 @@ with left:
         if img is not None:
             st.image(img, caption=f'{img.shape[1]}×{img.shape[0]} px')
 
-        use_sahi = st.toggle('ใช้ SAHI — จับวัชพืชต้นเล็กได้ดีขึ้น', value=on_gpu,
-                             help=None if on_gpu else 'บนเซิร์ฟเวอร์ CPU ฟรี ใช้เวลาประมาณ 10–30 วินาทีต่อภาพ')
+        use_sahi = st.toggle(f'ใช้ SAHI (ชิ้น {core.SLICE} px) — แนะนำ: โมเดลเทรนด้วยภาพตัดชิ้น', value=True,
+                             help=None if on_gpu else 'บนเซิร์ฟเวอร์ CPU ฟรี ใช้เวลาประมาณ 10–40 วินาทีต่อภาพ')
         conf = st.slider('Confidence threshold', 0.10, 0.90, 0.25, 0.05)
         grid = st.slider('ความละเอียดกริดแผนที่ (คอลัมน์)', 6, 30, 12, 1)
         go = st.button('สแกนวัชพืช  →', type='primary', disabled=img is None)
 
+# ---------------- ประมวลผล ----------------
 if go and img is not None:
     get_models()
     with st.spinner('กำลังตรวจจับวัชพืช…' + (' (SAHI)' if use_sahi else '')):
@@ -98,6 +104,7 @@ if go and img is not None:
 
 res = st.session_state.get('result')
 
+# ---------------- ฝั่งขวา: ผลลัพธ์ ----------------
 with right:
     with st.container(border=True):
         st.markdown('<div class="section-label">02 · Detection &amp; Prescription Map</div>', unsafe_allow_html=True)
