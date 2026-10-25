@@ -11,13 +11,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # Spaces: วางไฟล์ weed_best.pt ไว้ข้าง app.py | Colab: ตั้ง os.environ['MODEL_PATH'] ก่อน import
 MODEL_PATH  = os.environ.get('MODEL_PATH', os.path.join(HERE, 'weed_best.pt'))
 EXAMPLE_DIR = os.environ.get('EXAMPLE_DIR', os.path.join(HERE, 'examples'))
-IMGSZ       = int(os.environ.get('IMGSZ', 1024))     # ต้องตรงกับตอนเทรน (weed_thai_v5_tiled = 1024)
+IMGSZ       = int(os.environ.get('IMGSZ', 1024))     # ต้องตรงกับตอนเทรน (v7 = 1024)
 SLICE       = int(os.environ.get('SLICE', 1024))     # ขนาดชิ้น SAHI = ขนาดชิ้นตอนเทรน (tiled training)
 MAX_SIDE    = int(os.environ.get('MAX_SIDE', 2048))  # ย่อภาพใหญ่ก่อนประมวลผล เพื่อไม่ให้ SAHI บน CPU ช้าเกินไป
 
 # ตัวเลขบนหัวเว็บ — ผลบน test set (แก้ให้ตรงกับโมเดลที่ใช้จริง)
-MODEL_NAME  = 'YOLOv8s · weed_thai_v5_tiled'
-MODEL_STATS = [('mAP50 นาไทย', '53.1%'), ('Precision', '57.1%'), ('Recall', '53.4%'), ('SAHI slice', '1024 px')]
+MODEL_NAME  = 'YOLO11s · v7 (รอบที่ 12)'
+MODEL_STATS = [('mAP50 นาไทย', '70.2%'), ('Precision', '65.6%'), ('Recall', '67.8%'), ('F1 ระดับกริด', '89.3%')]
 
 # เกณฑ์ตามตารางที่ 4.8 ในเล่ม
 LEVELS = [  # (ชื่อ, conf ต่ำสุด, สีกรอบ, สีบนแผนที่, การดำเนินการ)
@@ -246,7 +246,7 @@ def results_html(dets, level, seconds, use_sahi):
         ('จุดที่พบ', f'{len(dets)}', 'ตำแหน่งวัชพืช', ''),
         ('ต้องพ่นทันที', f'{pct[0]:.1f}%', 'ของพื้นที่ภาพ', 'hot'),
         ('Conf สูงสุด', f'{max(confs, default=0):.2f}', f'เฉลี่ย {np.mean(confs) if confs else 0:.2f}', ''),
-        ('เวลาประมวลผล', f'{seconds:.1f}s', 'SAHI' if use_sahi else 'YOLOv8s ปกติ', ''),
+        ('เวลาประมวลผล', f'{seconds:.1f}s', 'SAHI' if use_sahi else 'ไม่ใช้ SAHI', ''),
     ]
     k = ''.join(f'<div class="kpi {c}"><small>{a}</small><b>{b}</b><em>{e}</em></div>' for a, b, e, c in kpis)
     bar = ''.join(f'<i style="width:{p:.2f}%;background:{rgb(LEVELS[i][3])}"></i>' for i, p in enumerate(pct))

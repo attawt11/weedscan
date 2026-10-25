@@ -84,7 +84,7 @@ with left:
         if img is not None:
             st.image(img, caption=f'{img.shape[1]}×{img.shape[0]} px')
 
-        use_sahi = st.toggle(f'ใช้ SAHI (ชิ้น {core.SLICE} px) — แนะนำ: โมเดลเทรนด้วยภาพตัดชิ้น', value=True,
+        use_sahi = st.toggle(f'ใช้ SAHI (ชิ้น {core.SLICE} px) — แม่นขึ้นเล็กน้อย แต่ช้ากว่าประมาณ 8 เท่า', value=on_gpu,
                              help=None if on_gpu else 'บนเซิร์ฟเวอร์ CPU ฟรี ใช้เวลาประมาณ 10–40 วินาทีต่อภาพ')
         conf = st.slider('Confidence threshold', 0.10, 0.90, 0.25, 0.05)
         grid = st.slider('ความละเอียดกริดแผนที่ (คอลัมน์)', 6, 30, 12, 1)
